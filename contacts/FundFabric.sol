@@ -11,26 +11,33 @@ contract FundFabric is Ownable {
         string desc;
     }
 
+    modifier ownerOfFund(uint _fundId) {
+        require(msg.sender == fundToOwner[_fundId]);
+        _;
+    }
+
     Fund[] public funds;
 
     mapping (uint => address) public fundToOwner;
     mapping (address => uint) ownerFundCount;
 
-    function createFund(string _name, string _desc) public {
+    function createFund(string _name, string _desc) external {
         uint fundId = funds.push(Fund(_name, _desc)) - 1;
         fundToOwner[fundId] = msg.sender;
         ownerFundCount[msg.sender]++;
         NewFund(fundId, _name, _desc);
     }
 
-    function changeName(uint _fundId, string _newName) public {
-        require(msg.sender == fundToOwner[_fundId]);
+    function changeName(uint _fundId, string _newName) external ownerOfFund(_fundId) {
         funds[_fundId].name = _newName;
     }
 
-    function changeDesc(uint _fundId, string _newDesc) public {
-        require(msg.sender == fundToOwner[_fundId]);
+    function changeDesc(uint _fundId, string _newDesc) external ownerOfFund(_fundId) {
         funds[_fundId].desc = _newDesc;
+    }
+
+    function deleteFund(uint _fundId) external ownerOfFund(_fundId) {
+        //TODO: ...
     }
 
     function getFundsByOwner(address _owner) external view returns (uint[]) {
