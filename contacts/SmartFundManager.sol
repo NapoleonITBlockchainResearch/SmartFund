@@ -4,10 +4,10 @@ import "./Utils.sol";
 
 contract SmartFundManager is Ownable {
     
-    address public register;
+    address public registry;
 
-    function setRegister(address _register) external onlyOwner {
-        register = _register;
+    function setRegistry(address _registry) external onlyOwner {
+        registry = _registry;
     }
 
     function kill() public onlyOwner {
