@@ -12,9 +12,10 @@ contract OfferFabric is Ownable {
         string name;
         string desc;
         State state;
-        uint totalSum;
-        uint maxSumPer;
-        uint minSumPer;
+        uint totalSum;  //wei
+        uint maxSumPer; //wei
+        uint minSumPer; //wei
+        uint rate;      //wei
     }
 
     modifier ownerOfOffer(uint _offerId) {
@@ -35,7 +36,7 @@ contract OfferFabric is Ownable {
 
     function createOffer(uint _fundId, string _name, string _desc) external {
         //TODO: add {require} for check fundId exists
-        uint offerId = offers.push(Offer(_name, _desc, State.Initial, 0, 0, 0)) - 1;
+        uint offerId = offers.push(Offer(_name, _desc, State.Initial, 0, 0, 0, 1)) - 1;
         offerToOwner[offerId] = msg.sender;
         ownerOfferCount[msg.sender]++;
         offerToFund[offerId] = _fundId;
@@ -65,6 +66,10 @@ contract OfferFabric is Ownable {
 
     function changeMinSumPer(uint _offerId, uint _newMinSumPer) external ownerOfOffer(_offerId) {
         offers[_offerId].minSumPer = _newMinSumPer;
+    }
+
+    function changeRate(uint _offerId, uint _newRate) external ownerOfOffer(_offerId) {
+        offers[_offerId].rate = _newRate;
     }
 
     function getOffersByOwner(address _owner) external view returns (uint[]) {
