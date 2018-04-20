@@ -27,6 +27,7 @@ contract OfferFabric is Ownable {
 
     mapping (uint => address) public offerToOwner;
     mapping (address => uint) ownerOfferCount;
+
     mapping (uint => uint) public offerToFund;
     mapping (uint => uint) fundOfferCount;
     
@@ -36,6 +37,7 @@ contract OfferFabric is Ownable {
 
     function createOffer(uint _fundId, string _name, string _desc) external {
         //TODO: add {require} for check fundId exists
+        //TODO: add {require} for check fundId owner
         uint offerId = offers.push(Offer(_name, _desc, State.Initial, 0, 0, 0, 1)) - 1;
         offerToOwner[offerId] = msg.sender;
         ownerOfferCount[msg.sender]++;
