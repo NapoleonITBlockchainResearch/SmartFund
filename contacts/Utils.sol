@@ -15,7 +15,7 @@ contract Ownable {
     }
     
     modifier onlyThisOwner(address _owner) {
-        require(msg.sender == _owner);
+        require(owner == _owner);
         _;
     }
 
