@@ -1,10 +1,10 @@
 pragma solidity ^0.4.20;
 
-import "./Utils.sol";
+import "./Ownable.sol";
 
 contract OfferFabric is Ownable {
 
-    event NewOffer(uint offerId, uint fundId, string name, string desc);
+    event NewOffer(uint offerId, string name, string desc, uint totalSum);
 
     enum State { Initial, Open, Failed, Paid, Refund }
 
@@ -27,23 +27,16 @@ contract OfferFabric is Ownable {
 
     mapping (uint => address) public offerToOwner;
     mapping (address => uint) ownerOfferCount;
-
-    mapping (uint => uint) public offerToFund;
-    mapping (uint => uint) fundOfferCount;
     
     function kill() public onlyOwner {
         selfdestruct(owner);
     }
 
-    function createOffer(uint _fundId, string _name, string _desc) external {
-        //TODO: add {require} for check fundId exists
-        //TODO: add {require} for check fundId owner
-        uint offerId = offers.push(Offer(_name, _desc, State.Initial, 0, 0, 0, 1)) - 1;
+    function createOffer(string _name, string _desc, uint _totalSum) external {
+        uint offerId = offers.push(Offer(_name, _desc, State.Initial, _totalSum, 0, 0, 1)) - 1;
         offerToOwner[offerId] = msg.sender;
         ownerOfferCount[msg.sender]++;
-        offerToFund[offerId] = _fundId;
-        fundOfferCount[_fundId]++;
-        NewOffer(offerId, _fundId, _name, _desc);
+        NewOffer(offerId, _name, _desc, _totalSum);
     }
 
     function changeName(uint _offerId, string _newName) external ownerOfOffer(_offerId) {
@@ -79,18 +72,6 @@ contract OfferFabric is Ownable {
         uint counter = 0;
         for (uint i = 0; i < offers.length; i++) {
             if (offerToOwner[i] == _owner) {
-                result[counter] = i;
-                counter++;
-            }
-        }
-        return result;
-    }
-
-    function getOffersByFundId(uint _fundId) external view returns (uint[]) {
-        uint[] memory result = new uint[](fundOfferCount[_fundId]);
-        uint counter = 0;
-        for (uint i = 0; i < offers.length; i++) {
-            if (offerToFund[i] == _fundId) {
                 result[counter] = i;
                 counter++;
             }
