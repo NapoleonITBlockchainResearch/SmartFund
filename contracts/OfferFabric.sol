@@ -1,3 +1,7 @@
+/// @title OfferFabric: Service for Ethereum pooling.
+/// @author Shagaleev Alexey
+/// @dev Contract for create and manage offers, also investing.
+
 pragma solidity ^0.4.20;
 
 import "./Ownable.sol";
