@@ -1,6 +1,6 @@
 pragma solidity ^0.4.20;
 
-import "./Utils.sol";
+import "./Ownable.sol";
 
 contract SmartFundManager is Ownable {
     
